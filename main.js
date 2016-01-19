@@ -113,7 +113,7 @@ function Goku(game) {
     this.animations.SSFlyRight = new Animation(ASSET_MANAGER.getAsset("./img/customGoku.png"), 301, 184, 109, 66, .02, 1, true, false);
     this.animations.SSFlyUp = new Animation(ASSET_MANAGER.getAsset("./img/customGoku.png"), 134, 400, 70, 71, .02, 1, true, false);
     this.animations.SSFlyDown = new Animation(ASSET_MANAGER.getAsset("./img/customGoku.png"), 210, 395, 60, 72, .02, 1, true, false);
-    this.animations.SSKamehameha = new Animation(ASSET_MANAGER.getAsset("./img/customGoku.png"), 145, 495, 150, 80, .25, 11, false, false );
+    this.animations.SSKamehameha = new Animation(ASSET_MANAGER.getAsset("./img/customGoku.png"), 145, 481, 150, 100, .1, 11, false, false );
 
     //states
     this.idle = true;
@@ -129,8 +129,6 @@ function Goku(game) {
 
     this.isSS = false;
     this.SSidle = false;
-    this.SSFlyingRight = false;
-    this.SSFlyingLeft = false;
 
     this.radius = 100;
     this.ground = 300;
@@ -146,10 +144,10 @@ Goku.prototype.constructor = Goku;
 
 
 Goku.prototype.update = function() {
-    if (this.game.right) this.flyingRight = true;
+    if (this.game.right && !this.game.left) this.flyingRight = true;
     else this.flyingRight = false;
 
-    if (this.game.left) this.flyingLeft = true;
+    if (this.game.left && !this.game.right) this.flyingLeft = true;
     else this.flyingLeft = false;
 
     if (this.game.space) this.goingFullSS = true;
@@ -160,8 +158,13 @@ Goku.prototype.update = function() {
     if (this.game.down) this.flyingDown = true;
     else this.flyingDown = false;
 
-    if (this.game.eKey && this.isSS) this.performingKamehameha = true;
-    else this.performingKamehameha = false;
+    if (this.isSS && this.game.eKey ) {
+        this.performingKamehameha = true;
+        console.log("Kamehameha time");
+
+
+    }
+    //else this.performingKamehameha = false;
 
 
 
@@ -194,9 +197,15 @@ Goku.prototype.update = function() {
     }
 
     if (this.performingKamehameha) {
+        this.SSidle = false; // should already be, but testing
         if (this.animations.SSKamehameha.isDone()) {
-            this.performingKamehameha = false;
             this.SSidle = true;
+            this.performingKamehameha = false;
+
+
+            this.animations.SSKamehameha.elapsedTime = 0;
+           // this.game.eKey = false;
+
         }
     }
 
@@ -212,37 +221,56 @@ Goku.prototype.draw = function(ctx) {
     }
 
     if (this.isSS) {
+
+        //Right + up
         if (this.flyingRight && this.flyingUp) this.animations.SSFlyRight.drawFrame(this.game.clockTick, ctx, this.x += 15, this.y -= 5);
+        //Right + down
         else if (this.flyingRight && this.flyingDown) this.animations.SSFlyRight.drawFrame(this.game.clockTick, ctx, this.x += 15, this.y += 5);
+        //Right
         else if (this.flyingRight) this.animations.SSFlyRight.drawFrame(this.game.clockTick, ctx, this.x += 15, this.y);
 
 
+
+        //Left + up
         if (this.flyingLeft && this.flyingUp) this.animations.SSFlyLeft.drawFrame(this.game.clockTick, ctx, this.x -= 15, this.y -=5);
+        //Left + down
         else if (this.flyingLeft && this.flyingDown) this.animations.SSFlyLeft.drawFrame(this.game.clockTick, ctx, this.x -= 15, this.y +=5);
+        //Left
         else if (this.flyingLeft) this.animations.SSFlyLeft.drawFrame(this.game.clockTick, ctx, this.x -= 15, this.y);
 
 
-
+        //Fly down
         if (this.y < 410 && this.flyingDown && !this.flyingLeft && !this.flyingRight) this.animations.SSFlyDown.drawFrame(this.game.clockTick, ctx, this.x, this.y += 5);
+        //Fly Up
         if (this.flyingUp && !this.flyingLeft && !this.flyingRight) this.animations.SSFlyUp.drawFrame(this.game.clockTick, ctx, this.x, this.y -= 5);
 
-        if (this.performingKamehameha) this.animations.SSKamehameha.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
+        //Kamehameha wave : needs work
+        if (this.performingKamehameha) {
+            this.animations.SSKamehameha.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            console.log("Really performing it now, srs."); // only happens once
+        }
+        //Idle frame
         if (this.SSidle) this.animations.SSIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
 
     } else {
+        //Idle frame
         if (this.idle) this.animations.nIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
 
-
+        //Right + up
         if (this.flyingRight && this.flyingUp) this.animations.nFlyRight.drawFrame(this.game.clockTick, ctx, this.x += 15, this.y -= 5);
+        //Right + down
         else if (this.flyingRight && this.flyingDown) this.animations.nFlyRight.drawFrame(this.game.clockTick, ctx, this.x += 15, this.y += 5);
+        //Right
         else if (this.flyingRight) this.animations.nFlyRight.drawFrame(this.game.clockTick, ctx, this.x += 15, this.y);
 
-
+        //Left + up
         if (this.flyingLeft && this.flyingUp) this.animations.nFlyLeft.drawFrame(this.game.clockTick, ctx, this.x -= 15, this.y -=5);
+        //Left + down
         else if (this.flyingLeft && this.flyingDown) this.animations.nFlyLeft.drawFrame(this.game.clockTick, ctx, this.x -= 15, this.y +=5);
+        //Left
         else if (this.flyingLeft) this.animations.nFlyLeft.drawFrame(this.game.clockTick, ctx, this.x -= 15, this.y);
 
         if (this.y < 410 && this.flyingDown && !this.flyingLeft && !this.flyingRight) this.animations.nFlyDown.drawFrame(this.game.clockTick, ctx, this.x, this.y += 5);

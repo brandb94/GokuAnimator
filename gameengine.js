@@ -76,7 +76,12 @@ GameEngine.prototype.startInput = function () {
         if (e.which === 40) that.down = true;
         if (e.which === 38) that.up = true;
 
-        if (String.fromCharCode(e.which) === 'e') that.eKey = true;
+        if (String.fromCharCode(e.which) === 'E') {
+            that.eKey = true;
+            console.log(String.fromCharCode(e.which) + " key pressed");
+        }
+
+       // console.log(String.fromCharCode(e.which) + " key pressed");
 
 
         e.preventDefault();
@@ -91,13 +96,18 @@ GameEngine.prototype.startInput = function () {
 
         if (e.which === 39) that.right = false; //right arrow
 
-        if (e.which === 40) that.down = false;
+        if (e.which === 40) that.down = false;  //down arrow
 
-        if (e.which === 38) that.up = false;
+        if (e.which === 38) that.up = false;    // up arrow
 
-        if (String.fromCharCode(e.which) === 'e') that.eKey = false;
+        if (String.fromCharCode(e.which) === 'E') that.eKey = false;
 
     }, false);
+
+
+
+
+
 
     console.log('Input started');
 }
