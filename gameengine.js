@@ -148,6 +148,8 @@ GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
     this.update();
     this.draw();
+
+    //Set things to null if you only want something to happen once.
     this.space = null;
 }
 

@@ -152,10 +152,10 @@ Goku.prototype.update = function() {
 
     if (this.game.space) this.goingFullSS = true;
 
-    if (this.game.up) this.flyingUp = true;
+    if (this.game.up && !this.game.down) this.flyingUp = true;
     else this.flyingUp = false;
 
-    if (this.game.down) this.flyingDown = true;
+    if (this.game.down && !this.game.up) this.flyingDown = true;
     else this.flyingDown = false;
 
     if (this.isSS && this.game.eKey ) {
